@@ -1,0 +1,106 @@
+<#--
+ è‡ªå®šä¹‰çš„åˆ†é¡µæŒ‡ä»¤
+    å±žæ€§ï¼š
+   pageNo      å½“å‰�é¡µå�·(int)
+   pageSize    æ¯�é¡µè¦�æ˜¾ç¤ºçš„è®°å½•æ•°(int)
+   toURL       ç‚¹å‡»åˆ†é¡µæ ‡ç­¾æ—¶è¦�è·³è½¬åˆ°çš„ç›®æ ‡URL(string)
+   recordCount æ€»è®°å½•æ•°(int)
+ -->
+ 
+<#macro pager pageNo pageSize toURL recordCount>  
+	<#-- å®šä¹‰å±€éƒ¨å�˜é‡�pageCountä¿�å­˜æ€»é¡µæ•° -->
+	<#assign pageCount=((recordCount + pageSize - 1) / pageSize)?int>
+	<#if recordCount==0><#return/></#if>
+	
+	<#-- è¾“å‡ºåˆ†é¡µæ ·å¼� -->
+	<style type="text/css">
+	.pagination {padding: 5px;float:right;font-size:12px;}
+	.pagination a, .pagination a:link, .pagination a:visited {padding: 2px 5px;margin: 2px;border: 1px solid #aaaadd;text-decoration: none;color: #006699;}
+	.pagination a:hover, .pagination a:active {border: 1px solid #ff0000;color: #000;text-decoration: none;}
+	.pagination span.current {padding: 2px 5px;margin: 2px;border: 1px solid #ff0000;font-weight: bold;background-color: #ff0000;color: #FFF;}
+	.pagination span.disabled {padding: 2px 5px;margin: 2px;border: 1px solid #eee; color: #ddd;}
+	</style>
+	
+	<#-- é¡µå�·è¶Šç•Œå¤„ç�† -->
+		<#if (pageNo > pageCount)>
+			<#assign pageNo=pageCount>
+		</#if>
+		<#if (pageNo < 1)>
+			<#assign pageNo=1>
+		</#if>
+	
+	<#-- è¾“å‡ºåˆ†é¡µè¡¨å�• -->
+	<div class="pagination">
+		<form method="post" action="" name="qPagerForm">
+			<#-- æŠŠè¯·æ±‚ä¸­çš„æ‰€æœ‰å�‚æ•°å½“ä½œéš�è—�è¡¨å�•åŸŸ(æ— æ³•è§£å†³ä¸€ä¸ªå�‚æ•°å¯¹åº”å¤šä¸ªå€¼çš„æƒ…å†µ) -->
+			<#list RequestParameters?keys as key>
+				<#if (key!="pageNo" && RequestParameters[key]??)>
+					<input type="hidden" name="${key}" value="${RequestParameters[key]}"/>
+				</#if>
+			</#list>
+			<input type="hidden" name="pageNo" value="${pageNo}"/>
+			<#-- ä¸Šä¸€é¡µå¤„ç�† -->
+			<#if (pageNo == 1)>
+				<span class="disabled">&laquo;&nbsp;ä¸Šä¸€é¡µ</span>
+			<#else>
+				<a href="javascript:turnOverPage(${pageNo - 1})">&laquo;&nbsp;ä¸Šä¸€é¡µ</a>
+			</#if>
+			
+			<#-- å¦‚æžœå‰�é�¢é¡µæ•°è¿‡å¤š,æ˜¾ç¤º... -->
+			<#assign start=1>
+			<#if (pageNo > 4)>
+				<#assign start=(pageNo - 1)>
+				<a href="javascript:turnOverPage(1)">1</a>
+				<a href="javascript:turnOverPage(2)">2</a>&hellip;
+			</#if>
+			
+			<#-- æ˜¾ç¤ºå½“å‰�é¡µå�·å’Œå®ƒé™„è¿‘çš„é¡µå�· -->
+			<#assign end=(pageNo + 1)>
+			<#if (end > pageCount)>
+				<#assign end=pageCount>
+			</#if>
+			
+			<#list start..end as i>
+				<#if (pageNo==i)>
+					<span class="current">${i}</span>
+				<#else>
+					<a href="javascript:turnOverPage(${i})">${i}</a>      
+				</#if>
+			</#list>
+			
+			<#-- å¦‚æžœå�Žé�¢é¡µæ•°è¿‡å¤š,æ˜¾ç¤º... -->
+			<#if (end < pageCount - 2)>
+				&hellip;
+			</#if>
+			<#if (end < pageCount - 1)>
+				<a href="javascript:turnOverPage(${pageCount - 1})">${pageCount-1}</a>
+			</#if>
+			<#if (end < pageCount)>
+				<a href="javascript:turnOverPage(${pageCount})">${pageCount}</a>
+			</#if>
+			
+			<#-- ä¸‹ä¸€é¡µå¤„ç�† -->
+			<#if (pageNo == pageCount)>
+				<span class="disabled">ä¸‹ä¸€é¡µ&nbsp;&raquo;</span>
+			<#else>
+				<a href="javascript:turnOverPage(${pageNo + 1})">ä¸‹ä¸€é¡µ&nbsp;&raquo;</a>
+			</#if>
+		</form>
+		
+	<script language="javascript">
+		function turnOverPage(no){
+			var qForm=document.qPagerForm;
+			
+			if(no>${pageCount}){
+				no=${pageCount};
+			}
+			if(no<1){
+				no=1;
+			}
+			qForm.pageNo.value=no;
+			qForm.action="${toURL}";
+			qForm.submit();
+		}
+	</script>
+	</div> 
+</#macro>

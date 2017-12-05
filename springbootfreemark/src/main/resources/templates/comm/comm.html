@@ -1,0 +1,35 @@
+<#assign base=request.contextPath />
+
+<#--公共顶部-->
+<#macro header author="none" title="title" keywords="keywords" description="description">
+<!DOCTYPE html>
+	<html>
+		<head lang="en">
+			<meta charset="utf-8">
+			<meta http-equiv="X-UA-Compatible" content="IE=edge">
+			<meta name="viewport" content="width=device-width, initial-scale=1">
+			<meta name="author" content="${author}">
+			<meta name="keywords" content="${keywords}">
+			<meta name="description" content="${description}">
+			<base id="base" href="${base}">
+			<title>${title}</title>
+			<link href="/css/bootstrap.css" rel="stylesheet">
+			<link href="/css/main.css" rel="stylesheet">
+	
+			<#nested>
+		</head>
+		<body>
+</#macro>
+  
+<#--common footer-->
+<#macro footer>
+		<script src="${base}/js/jquery.js"></script>
+		<#nested>
+		<footer class="footer">
+			<div class="container">
+				<p class="text-muted">©2016 pengs1</p>
+			</div>
+		</footer>
+		</body>
+	</html>
+</#macro>

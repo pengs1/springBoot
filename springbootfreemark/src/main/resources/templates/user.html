@@ -1,0 +1,197 @@
+<#assign base=request.contextPath />
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="pengs1">
+		<base id="base" href="${base}">
+		<title>Spring Boot - hello</title>
+		<!-- Bootstrap core CSS -->
+		<link href="${base}/css/bootstrap.css" rel="stylesheet">
+		<link href="${base}/css/main.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="container">
+			<div class="page-header">
+				<h1>Sprint Boot: Hello</h1>
+			</div>
+			<#if users??>
+				<table>
+					<#list sortUser(users) as user>
+						<tr>
+							<td style="word-break:break-all">
+								${user.name}
+							</td>
+							<td style="word-break:break-all">
+								<#if (user.age>20)>
+									Age is above 20!
+								<#elseif (user.age<=20)>
+									Age is smaller than 20!
+								<#else>
+									Unknow age!
+								</#if>
+							</td>
+						</tr>
+					</#list>
+				</table>
+			</#if>
+			<br /><br />
+			<#if userMap??>
+				<table>
+					<#list userMap?keys as userKey>
+						<tr>
+							<td style="word-break:break-all">
+								key:${userKey}
+							</td>
+							<td style="word-break:break-all">
+								value:${userMap[userKey]}
+							</td>
+						</tr>
+					</#list>
+				</table>
+			</#if>
+			<br /><br />
+			<@content name="pengs1" age="20">
+				${output}
+				${append}
+			</@content>
+		</div>
+		<div class="container">
+			<p>
+				${booleanVar!?string('yes', 'no')}
+			</p>
+			<p>
+				${dateVar!?string('yyyy-MM-dd')}
+			</p>
+			<p>
+				null value test:${nullVar!'Default'}
+			</p>
+			<p>
+				<#assign a=100/>
+				<#assign varB=10/>
+				<ul>
+					<li>
+						a=<font color="red">${a}</font>
+					</li>
+					<li>
+						a*5=<font color="red">${a*100}</font>
+					</li>
+					<#if varB?exists>
+						<li>
+							varB exists and value is: <font color="red">${varB}</font>
+						</li>
+					</#if>
+				</ul>
+			</p>
+		</div>
+		<div class="container">
+			<h1>switch case break default</h1>
+			<#assign gender=2>
+			<#switch gender>
+				<#case 0>
+				<#case 2>
+				man
+				<#break>
+				
+				<#case 1>
+				female
+				<#break>
+				
+				<#default>
+				unknow
+			</#switch>
+		</div>
+		<div class="container">
+			<h1>how to deal with string in freemark</h1>
+			<#assign a="peng"/>
+			<#assign b="songsong"/>
+			<ul>
+				<li>String a + b: ${a+b}</li>
+				<li>substring a + b: ${(a+b)?substring(0,5)}</li>
+				<li>string length: ${(a+b)?length}</li>
+				<li>upper_case: ${(a+b)?upper_case}</li>
+				<li>lower_case: ${(a+b)?lower_case}</li>
+				<li>index_of: ${(a+b)?index_of('song')} </li>
+				<li>lastindex_of: ${(a+b)?last_index_of('song')}</li>
+				<li>replace: ${(a+b)?replace('song', 'peng')}</li>
+			</ul>
+		</div>
+		<div class="container">
+			<h1>Default sort order</h1>
+			<#assign intArray=[6,4,8,10,1,3,9,2]/>
+			<#list intArray as item>
+				${item}
+			</#list>
+			<h1>Custom define sort method</h1>
+			<#list sortInt(intArray, true) as item>
+				${item}
+			</#list>
+			<h1>Inner sort and reverse</h1>
+			<#list intArray?sort?reverse as item>
+				${item_index}: ${item} <br />
+			</#list>
+			<h1>Get specific index value</h1>
+			Index is 3: ${intArray[2]}
+			<h1>Test string('0.##')</h1>
+			<#assign varNum=12.3456 />
+			String: ${varNum?string('0.##')}
+			
+			<h1>Custom define directive</h1>
+			<@pengs id="20" gender="man"; name, age>
+				name is: ${name!'defaultName'}, and age is : ${age!'18'}
+			</@pengs>
+			
+			<h1><font color="red">Macro</font></h1>
+			<#macro test>
+				<font color="red">无参数的macro</font> <br/>
+			</#macro>
+			<@test />
+			
+			<#macro test2 param1 param2>
+				<font color="red">有参数的macro, 参数1：${param1}， 参数2: ${param2}</font><br/>
+			</#macro>
+			<@test2 param1='java' param2='python' />
+			
+			<#macro test3 param1 param2='python'>
+				<font color="red">有默认参数的macro， 参数1： ${param1}, 参数2：${param2}</font><br />
+			</#macro>
+			<@test3 param1='java' />
+			<@test3 param1='java' param2='hello python' />
+			
+			<h1><font color="red">有多个参数的macro</font></h1>
+			<#macro test4 param1 param2 paramExt...>
+				<font color="red">第三个参数是： ${paramExt['param3']}</font>
+			</#macro>
+			<@test4 param1='Asp.net' param2='C++' param3='Node.js' param4='javascript'/>
+			
+			<h1><font color="red">macro & nested</font></h1>
+			<#macro test5 param1 param2='javascript'>
+				macro 的第一个参数： ${param1}， 第二个是默认参数:${param2} <br/>
+				<#nested param1, 'default value in nested' > <br />
+			</#macro>
+			
+			<@test5 param1='C++'; var1, var2>
+				<p>using two paramters from nested</p>
+				<font color="green">from nested two paramters, one is:${var1}, the other one is:${var2} <br/> </font> 
+			</@test5>
+			<@test5 param1='Linux'; var1>
+				<p>using one paramter from nested</p>
+				<font color="blue">from nested one paramters, one is:${var1}</font>
+			</@test5>
+		</div>
+		<footer class="footer">
+			<div class="container">
+				<p class="text-muted">©2016 pengs1</p>
+			</div>
+		</footer>
+		<script src="${base}/js/jquery.js"></script>
+		<script src="${base}/js/bootstrap.js"></script>
+	</body>
+</html>
+<script>
+$(document).ready(function() {
+});
+</script>

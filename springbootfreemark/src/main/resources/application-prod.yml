@@ -1,0 +1,34 @@
+server:
+  port: 8082
+
+zaobei: FFF
+
+age: 18
+
+content: cup size ${zaobei}, age:${age}
+
+User:
+  age: 19
+  name: Jack-FFF
+  address: shanghai
+
+spring.datasource:
+  url: jdbc:mysql://127.0.0.1:3306/test_demo?characterEncoding=utf8&useSSL=false
+  driver-class-name: com.mysql.jdbc.Driver
+  username: root
+  password: root
+
+spring.jpa:
+  database: MYSQL
+  show-sql: true
+  hibernate.ddl-auto: update
+ 
+spring.freemarker:
+  allow-request-override: false
+  cache: true
+  check-template-location: true
+  charset: UTF-8
+  content-type: text/html
+  expose-request-attributes: false
+  expose-session-attributes: false
+  expose-spring-macro-helpers: false
