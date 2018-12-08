@@ -18,6 +18,8 @@ public class MD5EncoderTest {
 	
 	public static void main(String[] args) {
 		try {
+			String aaa = EncoderByMd5("123456");
+			System.out.println(aaa);
 			System.out.println(checkpassword(newPassword, oldpasswd));
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
@@ -33,6 +35,7 @@ public class MD5EncoderTest {
 			MessageDigest messageDigest = MessageDigest.getInstance("MD5");
 			Base64Encoder base64en = new Base64Encoder();
 			stringByMD5 = base64en.encode(messageDigest.digest(password.getBytes(CHARSET_NAME)));
+			
 			return stringByMD5;
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
